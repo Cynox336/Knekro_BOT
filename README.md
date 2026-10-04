@@ -42,15 +42,6 @@ Inspirado en los míticos streams de **KNekro** y las mecánicas despiadadas del
 | :--- | :--- |
 | `/ranking [cat]` | Podio de más tiradas, más 50/50 perdidos (maldición de Qiqi) y más 5 estrellas. |
 | `/top` | Ranking de los mayores millonarios en MiniPeruanos del servidor. |
-
-### 🛠️ Comandos de Testeo
-| Comando | Descripción |
-| :--- | :--- |
-| `/reset [gemas]` | Resetea inventario, pity, cooldowns y saldo para empezar desde cero. |
-| `/darperuanos [cant]` | Concede fondos instantáneos para probar tiradas masivas o apuestas. |
-| `/setpity [pity] [aseg]` | Ajusta el pity (0 a 80) y garantía para comprobar el 50/50 o hard pity al instante. |
-| `/dar_ticket` | Otorga un Ticket 5★ para testear la creación de premios comunitarios. |
-
 ---
 
 ## 🎲 Reglas del Gacha
@@ -65,5 +56,5 @@ Inspirado en los míticos streams de **KNekro** y las mecánicas despiadadas del
 ## 📁 Arquitectura Modular (Cogs)
 - [`main.py`](main.py): Arranque del cliente, ciclo de vida y cargador automático de módulos.
 - [`database.py`](database.py): Base de datos asíncrona (`aiosqlite`).
-- `cogs/`: `gacha.py` (gachapón e inventario), `economy.py` (finanzas y apuestas), `ranking.py` (podios), `admin.py` (testing).
+- `cogs/`: `gacha.py` (gachapón e inventario), `economy.py` (finanzas y apuestas), `ranking.py` (podios).
 - `gachapon/`: `gacha_logic.py` (simulador), `gacha_pool.py` (catálogo con iconos), `quotes.py` (frases de KNekro).

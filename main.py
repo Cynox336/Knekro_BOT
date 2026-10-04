@@ -1,7 +1,11 @@
 import os
+import sys
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
+
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 import database as db
 

@@ -213,42 +213,6 @@ async def get_leaderboard(limit: int = 10):
             rows = await cursor.fetchall()
             return [dict(r) for r in rows]
 
-# -- Comandos de Testing y Reseteo --
-async def reset_user(user_id: int):
-    async with aiosqlite.connect(DB_NAME) as db:
-        await db.execute("DELETE FROM inventory WHERE user_id = ?", (user_id,))
-        await db.execute("""
-            INSERT INTO users (user_id, protogemas, pity_5star, pity_4star, guaranteed_5star, total_pulls, last_daily, last_beg, lost_5050_count)
-            VALUES (?, 1600, 0, 0, 0, 0, NULL, NULL, 0)
-            ON CONFLICT(user_id) DO UPDATE SET
-                protogemas = 1600,
-                pity_5star = 0,
-                pity_4star = 0,
-                guaranteed_5star = 0,
-                total_pulls = 0,
-                last_daily = NULL,
-                last_beg = NULL,
-                lost_5050_count = 0
-        """, (user_id,))
-        await db.commit()
-
-async def set_user_protogemas(user_id: int, amount: int):
-    await get_or_create_user(user_id)
-    async with aiosqlite.connect(DB_NAME) as db:
-        await db.execute(
-            "UPDATE users SET protogemas = ? WHERE user_id = ?",
-            (amount, user_id)
-        )
-        await db.commit()
-
-async def set_user_pity(user_id: int, pity_5star: int, guaranteed: int = 0):
-    await get_or_create_user(user_id)
-    async with aiosqlite.connect(DB_NAME) as db:
-        await db.execute(
-            "UPDATE users SET pity_5star = ?, guaranteed_5star = ? WHERE user_id = ?",
-            (pity_5star, guaranteed, user_id)
-        )
-        await db.commit()
 
 # -- Gestión de Objetos --
 async def get_item_count(user_id: int, item_name: str) -> int:
