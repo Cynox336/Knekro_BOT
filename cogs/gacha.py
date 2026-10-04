@@ -6,7 +6,6 @@ from discord.ext import commands
 import database as db
 import gachapon.gacha_logic as gacha
 import gachapon.gacha_pool as gacha_pool
-from gachapon.gacha_pool import PROMOTIONAL_5STAR
 from gachapon.quotes import (
     KNEKRO_QUOTES_5STAR,
     KNEKRO_QUOTES_LOST_5050,
@@ -67,27 +66,6 @@ class InventoryView(discord.ui.View):
 class GachaCog(commands.Cog, name="Gachapón"):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    # -- Comando /banner --
-    @app_commands.command(name="banner", description="Muestra el banner promocional activo y los detalles del gacha")
-    async def banner_cmd(self, interaction: discord.Interaction):
-        embed = discord.Embed(
-            title="🎰 BANNER PROMOCIONAL: El Despertar del Titán",
-            description=(
-                f"**Personaje 5★ Destacado:** {PROMOTIONAL_5STAR['name']}\n"
-                f"*{PROMOTIONAL_5STAR['description']}*\n\n"
-                "**Mecánicas y Probabilidades:**\n"
-                "• Coste: **160 MiniPeruanos** por tirada.\n"
-                "• **5★ Base:** 0.6% | **Soft Pity:** a partir de la tirada 60.\n"
-                "• **Hard Pity:** Tirada 80 garantizada al 100%.\n"
-                "• **Sistema 50/50:** Si sacas un 5★ y no tienes asegurado, hay 50% de probabilidad de ganar al Titán o 50% de perderlo con Qiqi u otros memes.\n"
-                "• **🎫 Objeto Especial 5★:** Puedes conseguir *'Añadir premio 5 estrellas'* (máx 3 acumulables) para usar `/añadir_premio` y crear un nuevo premio para el servidor.\n"
-                "• **4★ Garantizado:** Mínimo un 4★ cada 10 tiradas."
-            ),
-            color=0xFFD700
-        )
-        embed.set_footer(text="Usa /gachapon para tirar o /perfil para ver tu pity.")
-        await interaction.response.send_message(embed=embed)
 
     # -- Comando /gachapon --
     @app_commands.command(name="gachapon", description="Tira al gachapón (1 tirada = 160 MiniPeruanos | 10 tiradas = 1600 MiniPeruanos)")
@@ -393,7 +371,6 @@ class GachaCog(commands.Cog, name="Gachapón"):
             name="🎰 Gachapón & Colección",
             value=(
                 "• **`/gachapon [1 o 10]`** — Tira al gacha (160 / 1.600 MiniPeruanos) con descripciones cómicas.\n"
-                "• **`/banner`** — Consulta el 5★ promocional activo, probabilidades y estado del banner.\n"
                 "• **`/inventario`** — Revisa tu colección con selector interactivo para leer el lore de tus objetos.\n"
                 "• **`/objeto [nombre]`** — Ficha completa de cualquier objeto (historia, rareza y copias que posees).\n"
                 "• **`/añadir_premio`** — Canjea un Ticket 5★ para crear un nuevo premio legendario en el servidor.\n"
@@ -405,10 +382,10 @@ class GachaCog(commands.Cog, name="Gachapón"):
         embed.add_field(
             name="💳 Economía & Apuestas",
             value=(
-                "• **`/tarjetazo`** — Reclama 1.600 MiniPeruanos diarios (1 multi gratis al día).\n"
+                "• **`/tarjetazo`** — Reclama 1.600 MiniPeruanos (1 multi gratis cada 12h).\n"
                 "• **`/perfil`** — Consulta tu balance, pity acumulado (5★/4★), estado del 50/50 y derrotas ante Qiqi.\n"
-                "• **`/apuesta [cantidad] [opción]`** — Apuesta en la Ruleta (Rojo, Negro, Verde x14) o a Cara/Cruz.\n"
-                "• **`/mendigar`** — Pide limosna de emergencia a KNekro si estás en la quiebra (<160 MiniPeruanos, cada 12h)."
+                "• **`/apuesta [cantidad] [opción]`** — Apuesta en la Ruleta (Rojo/Negro x2, Verde x14) o a Cara/Cruz (x1.5).\n"
+                "• **`/mendigar`** — Pide limosna de emergencia a KNekro si estás en la quiebra (<160 MiniPeruanos, cada 1h 30m)."
             ),
             inline=False
         )

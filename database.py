@@ -88,7 +88,7 @@ async def update_balance(user_id: int, amount: int):
         await db.commit()
 
 # -- Recompensas Diarias --
-async def claim_daily(user_id: int, amount: int = 1600):
+async def claim_daily(user_id: int, amount: int = 1600, cooldown_hours: int = 12):
     user = await get_or_create_user(user_id)
     now = datetime.now(timezone.utc)
     last_daily_str = user.get("last_daily")
@@ -97,12 +97,13 @@ async def claim_daily(user_id: int, amount: int = 1600):
         try:
             last_daily = datetime.fromisoformat(last_daily_str)
             elapsed = (now - last_daily).total_seconds()
-            wait_seconds = 20 * 3600
+            wait_seconds = cooldown_hours * 3600
             if elapsed < wait_seconds:
                 remaining = wait_seconds - elapsed
                 hours = int(remaining // 3600)
                 minutes = int((remaining % 3600) // 60)
-                return False, f"¡Tranquilo ludópata! Aún debes esperar **{hours}h {minutes}m** para tu próximo tarjetazo."
+                time_str = f"{hours}h {minutes}m" if hours > 0 else f"{minutes}m"
+                return False, f"¡Tranquilo ludópata! Aún debes esperar **{time_str}** para tu próximo tarjetazo."
         except Exception:
             pass
 
@@ -115,7 +116,7 @@ async def claim_daily(user_id: int, amount: int = 1600):
     return True, f"¡Has pasado la tarjeta de crédito! Recibes **+{amount} MiniPeruanos** 💳 (Suficiente para una multi de 10 tiradas)."
 
 # -- Sistema de Mendigar --
-async def claim_mendigar(user_id: int, amount: int = 160, cooldown_hours: int = 12):
+async def claim_mendigar(user_id: int, amount: int = 160, cooldown_minutes: int = 90):
     user = await get_or_create_user(user_id)
     if user["protogemas"] >= 160:
         return False, "NOT_POOR", f"❌ ¿Pero qué me estás contando? Tienes **{user['protogemas']} MiniPeruanos**. ¡Tú no eres pobre, ve a gastártelos a /gachapon!"
@@ -127,12 +128,13 @@ async def claim_mendigar(user_id: int, amount: int = 160, cooldown_hours: int = 
         try:
             last_beg = datetime.fromisoformat(last_beg_str)
             elapsed = (now - last_beg).total_seconds()
-            wait_seconds = cooldown_hours * 3600
+            wait_seconds = cooldown_minutes * 60
             if elapsed < wait_seconds:
                 remaining = wait_seconds - elapsed
                 hours = int(remaining // 3600)
                 minutes = int((remaining % 3600) // 60)
-                return False, "COOLDOWN", f"¡No abuses, sinvergüenza! Ya te dimos limosna hace poco. Debes esperar **{hours}h {minutes}m** para volver a mendigar."
+                time_str = f"{hours}h {minutes}m" if hours > 0 else f"{minutes}m"
+                return False, "COOLDOWN", f"¡No abuses, sinvergüenza! Ya te dimos limosna hace poco. Debes esperar **{time_str}** para volver a mendigar."
         except Exception:
             pass
 

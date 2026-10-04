@@ -42,9 +42,9 @@ class EconomyCog(commands.Cog, name="Economía"):
         await interaction.response.send_message(embed=embed)
 
     # -- Comando /tarjetazo --
-    @app_commands.command(name="tarjetazo", description="Pasa la tarjeta de crédito y reclama tus 1600 MiniPeruanos diarios")
+    @app_commands.command(name="tarjetazo", description="Pasa la tarjeta de crédito y reclama tus 1600 MiniPeruanos (cada 12h)")
     async def tarjetazo_cmd(self, interaction: discord.Interaction):
-        success, message = await db.claim_daily(interaction.user.id)
+        success, message = await db.claim_daily(interaction.user.id, cooldown_hours=12)
         if success:
             embed = discord.Embed(title="💳 ¡Tarjetazo Bancario Aprobado!", description=message, color=0x2ECC71)
             embed.set_footer(text="KNekro dice: '¡Métele 50 pavos más, no pasa nada!'")
@@ -53,9 +53,9 @@ class EconomyCog(commands.Cog, name="Economía"):
         await interaction.response.send_message(embed=embed)
 
     # -- Comando /mendigar --
-    @app_commands.command(name="mendigar", description="Pídele limosna a KNekro si te has quedado sin MiniPeruanos (cada 12h)")
+    @app_commands.command(name="mendigar", description="Pídele limosna a KNekro si te has quedado sin MiniPeruanos (cada 1h 30m)")
     async def mendigar_cmd(self, interaction: discord.Interaction):
-        success, status, message = await db.claim_mendigar(interaction.user.id, amount=160, cooldown_hours=12)
+        success, status, message = await db.claim_mendigar(interaction.user.id, amount=160, cooldown_minutes=90)
 
         if status == "NOT_POOR":
             await interaction.response.send_message(message, ephemeral=True)
@@ -82,7 +82,7 @@ class EconomyCog(commands.Cog, name="Economía"):
             description=f"*{random.choice(frases_mendigo)}*\n\n{message}",
             color=0xF39C12
         )
-        embed.set_footer(text="Solo puedes mendigar una vez cada 12 horas.")
+        embed.set_footer(text="Solo puedes mendigar una vez cada 1 hora y 30 minutos.")
         await interaction.response.send_message(embed=embed)
 
     # -- Comando /apuesta --
@@ -95,8 +95,8 @@ class EconomyCog(commands.Cog, name="Economía"):
         app_commands.Choice(name="🔴 Rojo (x2)", value="rojo"),
         app_commands.Choice(name="⚫ Negro (x2)", value="negro"),
         app_commands.Choice(name="🟢 Verde / 0 (x14 - ¡Riesgo extremo!)", value="verde"),
-        app_commands.Choice(name="🪙 Cara (x2)", value="cara"),
-        app_commands.Choice(name="🪙 Cruz (x2)", value="cruz")
+        app_commands.Choice(name="🪙 Cara (x1.5)", value="cara"),
+        app_commands.Choice(name="🪙 Cruz (x1.5)", value="cruz")
     ])
     async def apuesta_cmd(self, interaction: discord.Interaction, cantidad: int, opcion: app_commands.Choice[str]):
         if cantidad <= 0:
@@ -114,33 +114,56 @@ class EconomyCog(commands.Cog, name="Economía"):
         eleccion = opcion.value
 
         if eleccion in ["cara", "cruz"]:
-            outcome = random.choice(["cara", "cruz"])
-            won = (eleccion == outcome)
-            multiplier = 2
-            roll_desc = f"La moneda cayó en **{outcome.upper()}** 🪙"
-        else:
-            wheel_num = random.randint(0, 36)
-            if wheel_num == 0:
-                outcome = "verde"
-            elif wheel_num % 2 == 0:
-                outcome = "rojo"
+            won = (random.random() < 0.38)
+            multiplier = 1.5
+            if won:
+                outcome = eleccion
+                roll_desc = f"La moneda cayó en **{outcome.upper()}** 🪙"
             else:
-                outcome = "negro"
-
-            won = (eleccion == outcome)
-            multiplier = 14 if outcome == "verde" else 2
+                if random.random() < 0.08:
+                    roll_desc = "¡La moneda cayó de canto y rodó hacia la alcantarilla! 🪙"
+                    outcome = "canto"
+                else:
+                    outcome = "cruz" if eleccion == "cara" else "cara"
+                    roll_desc = f"La moneda cayó en **{outcome.upper()}** 🪙"
+        elif eleccion == "verde":
+            won = (random.random() < (1 / 35))
+            multiplier = 14
+            if won:
+                wheel_num = 0
+                outcome = "verde"
+            else:
+                wheel_num = random.randint(1, 36)
+                outcome = "rojo" if wheel_num % 2 == 0 else "negro"
+            roll_desc = f"La bola de la ruleta cayó en el **{wheel_num} ({outcome.upper()})** 🎡"
+        else:
+            won = (random.random() < 0.20)
+            multiplier = 2
+            if won:
+                outcome = eleccion
+                numeros_validos = [n for n in range(1, 37) if (n % 2 == 0 if outcome == "rojo" else n % 2 != 0)]
+                wheel_num = random.choice(numeros_validos)
+            else:
+                if random.random() < 0.12:
+                    wheel_num = 0
+                    outcome = "verde"
+                else:
+                    outcome = "negro" if eleccion == "rojo" else "rojo"
+                    numeros_validos = [n for n in range(1, 37) if (n % 2 == 0 if outcome == "rojo" else n % 2 != 0)]
+                    wheel_num = random.choice(numeros_validos)
             roll_desc = f"La bola de la ruleta cayó en el **{wheel_num} ({outcome.upper()})** 🎡"
 
         if won:
-            ganancia_neta = cantidad * (multiplier - 1)
+            ganancia_neta = max(1, int(round(cantidad * (multiplier - 1))))
             await db.update_balance(interaction.user.id, ganancia_neta)
             nuevo_saldo = user_data["protogemas"] + ganancia_neta
+            total_recibido = cantidad + ganancia_neta
             embed = discord.Embed(
                 title="🤑 ¡¡HAS GANADO LA APUESTA!!",
                 description=(
                     f"{roll_desc}\n\n"
-                    f"Apostaste a: **{eleccion.upper()}**\n"
-                    f"Ganancia: **+{cantidad * multiplier} MiniPeruanos** 🎉\n"
+                    f"Apostaste a: **{eleccion.upper()}** ({multiplier}x)\n"
+                    f"Ganancia: **+{total_recibido:,} MiniPeruanos** 🎉\n"
                     f"Nuevo saldo: **{nuevo_saldo:,}** MiniPeruanos"
                 ),
                 color=0x2ECC71

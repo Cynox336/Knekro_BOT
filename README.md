@@ -24,7 +24,6 @@ Inspirado en los míticos streams de **KNekro** y las mecánicas despiadadas del
 | :--- | :--- |
 | `/help_gacha` | Guía interactiva con la lista de todos los comandos y su funcionamiento. |
 | `/gachapon [1 o 10]` | Tira al gacha (160 o 1.600 MiniPeruanos) con descripciones cómicas en cada tirada. |
-| `/banner` | Consulta el 5★ promocional activo, probabilidades y estado del banner. |
 | `/inventario` | Revisa tu colección con menú desplegable interactivo para leer el lore de tus objetos. |
 | `/objeto [nombre]` | Ficha completa de cualquier objeto con historia, rareza y copias que posees (autocompletado). |
 | `/añadir_premio` | 🎫 Crea un 5★ personalizado para incluirlo en el Gachapón del servidor (requiere Ticket 5★). |
@@ -33,10 +32,10 @@ Inspirado en los míticos streams de **KNekro** y las mecánicas despiadadas del
 ### 💳 Economía & Vicio
 | Comando | Descripción |
 | :--- | :--- |
-| `/tarjetazo` | Pasa la tarjeta bancaria y reclama tus 1.600 MiniPeruanos diarios (1 multi gratis al día). |
+| `/tarjetazo` | Pasa la tarjeta bancaria y reclama tus 1.600 MiniPeruanos (cada 12h). |
 | `/perfil` | Consulta tu balance, pity acumulado, estado del 50/50 y derrotas frente a Qiqi. |
-| `/apuesta [cant] [opc]` | Apuesta en la Ruleta (Rojo, Negro, Verde x14) o Cara/Cruz para duplicar o quedarte a cero. |
-| `/mendigar` | Pídele limosna de emergencia a KNekro si estás en la quiebra absoluta (<160 MiniPeruanos, cada 12h). |
+| `/apuesta [cant] [opc]` | Apuesta en la Ruleta (Rojo/Negro x2, Verde x14) o Cara/Cruz (x1.5). |
+| `/mendigar` | Pídele limosna de emergencia a KNekro si estás en la quiebra absoluta (<160 MiniPeruanos, cada 1h 30m). |
 
 ### 🏆 Salón de la Fama y Desgracias
 | Comando | Descripción |
