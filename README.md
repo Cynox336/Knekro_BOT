@@ -22,6 +22,7 @@ Inspirado en los míticos streams de **KNekro** y las mecánicas despiadadas del
 ### 🎰 Gachapón & Colección
 | Comando | Descripción |
 | :--- | :--- |
+| `/help_gacha` | Guía interactiva con la lista de todos los comandos y su funcionamiento. |
 | `/gachapon [1 o 10]` | Tira al gacha (160 o 1.600 MiniPeruanos) con descripciones cómicas en cada tirada. |
 | `/banner` | Consulta el 5★ promocional activo, probabilidades y estado del banner. |
 | `/inventario` | Revisa tu colección con menú desplegable interactivo para leer el lore de tus objetos. |

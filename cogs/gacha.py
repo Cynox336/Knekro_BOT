@@ -377,6 +377,54 @@ class GachaCog(commands.Cog, name="Gachapón"):
 
         await interaction.response.send_message(embed=embed)
 
+    # -- Comando /help_gacha --
+    @app_commands.command(name="help_gacha", description="Muestra la lista de todos los comandos disponibles y cómo utilizarlos")
+    async def help_gacha_cmd(self, interaction: discord.Interaction):
+        embed = discord.Embed(
+            title="🎰 Guía de Comandos — KNekro BOT",
+            description=(
+                "¡Bienvenido al simulador oficial de ludopatía y copium con KNekro!\n"
+                "Aquí tienes todos los comandos disponibles organizados por categoría:"
+            ),
+            color=0xF1C40F
+        )
+
+        embed.add_field(
+            name="🎰 Gachapón & Colección",
+            value=(
+                "• **`/gachapon [1 o 10]`** — Tira al gacha (160 / 1.600 MiniPeruanos) con descripciones cómicas.\n"
+                "• **`/banner`** — Consulta el 5★ promocional activo, probabilidades y estado del banner.\n"
+                "• **`/inventario`** — Revisa tu colección con selector interactivo para leer el lore de tus objetos.\n"
+                "• **`/objeto [nombre]`** — Ficha completa de cualquier objeto (historia, rareza y copias que posees).\n"
+                "• **`/añadir_premio`** — Canjea un Ticket 5★ para crear un nuevo premio legendario en el servidor.\n"
+                "• **`/premios_comunidad`** — Lista de premios 5★ creados por los miembros de la comunidad."
+            ),
+            inline=False
+        )
+
+        embed.add_field(
+            name="💳 Economía & Apuestas",
+            value=(
+                "• **`/tarjetazo`** — Reclama 1.600 MiniPeruanos diarios (1 multi gratis al día).\n"
+                "• **`/perfil`** — Consulta tu balance, pity acumulado (5★/4★), estado del 50/50 y derrotas ante Qiqi.\n"
+                "• **`/apuesta [cantidad] [opción]`** — Apuesta en la Ruleta (Rojo, Negro, Verde x14) o a Cara/Cruz.\n"
+                "• **`/mendigar`** — Pide limosna de emergencia a KNekro si estás en la quiebra (<160 MiniPeruanos, cada 12h)."
+            ),
+            inline=False
+        )
+
+        embed.add_field(
+            name="🏆 Salón de la Fama y Desgracias",
+            value=(
+                "• **`/top`** — Podio de los mayores millonarios en MiniPeruanos del servidor.\n"
+                "• **`/ranking [categoría]`** — Ránking de más tiradas, más 50/50 perdidos (Qiqi) o más 5 estrellas."
+            ),
+            inline=False
+        )
+
+        embed.set_footer(text="💡 Consejo: Pasa tu /tarjetazo cada día para conseguir 1600 MiniPeruanos gratis.")
+        await interaction.response.send_message(embed=embed)
+
 # -- Setup --
 async def setup(bot: commands.Bot):
     await bot.add_cog(GachaCog(bot))
